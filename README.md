@@ -37,7 +37,7 @@ Welcome to **Study Scheduler** – your smart assistant for organizing study pla
 Clone the repo:
 
 ```bash
-git clone https://github.com/
+[git clone https://github.com/](https://github.com/Muhammad-Adil-code/Study-Sheduler-ECC.git)
 ---
 
 ##✍️ How to Use
