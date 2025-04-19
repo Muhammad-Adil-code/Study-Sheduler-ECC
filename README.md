@@ -43,52 +43,52 @@ https://github.com/Muhammad-Adil-code/Study-Sheduler-ECC.git
 
 ## ✍️ How to Use
 
-1.✏️ Enter subject name(s), number of chapters, and number of study days.
-2.⭐ Choose subject preferences (optional).
-3.🔄 Click Generate Schedule.
-4.👀 View your customized schedule table.
-5.📩 Click Download PDF to export and print.
+1.✏️ Enter subject name(s), number of chapters, and number of study days.  
+2.⭐ Choose subject preferences (optional).  
+3.🔄 Click Generate Schedule.  
+4.👀 View your customized schedule table.  
+5.📩 Click Download PDF to export and print.  
 
 ---
 
 ## ❗ Input Validation
 
-📘 Subject name must not be empty
-🔢 Chapters and Days must be positive integers only
-🧮 The app will split or group chapters logically based on days
+📘 Subject name must not be empty  
+🔢 Chapters and Days must be positive integers only  
+🧮 The app will split or group chapters logically based on days  
 
 ---
 
 ## 📄 Example Output
 
-Day | Subject | Chapter
-1 | Math | Chapter 1
-2 | Science | Chapter 1
-3 | Math | Chapter 2
-... | ... | ...
+Day | Subject | Chapter  
+1 | Math | Chapter 1  
+2 | Science | Chapter 1  
+3 | Math | Chapter 2  
+... | ... | ...  
 
 ---
 
 ## 🙌 Contributions
 
-Contributions, issues and feature requests are welcome!
-Feel free to Reach me on mail or Linkidin
+Contributions, issues and feature requests are welcome!  
+Feel free to Reach me on mail or Linkidin  
 
 ---
 
 ## 📃 License
 
-This project is licensed under the MIT License. 📜
+This project is licensed under the MIT License. 📜  
 
 ---
 
 ## 🌟 Show Your Support
 
-Give a ⭐️ if you like this project and find it helpful!
+Give a ⭐️ if you like this project and find it helpful!  
 
 ---
 
 ## 👤 Author
 
-Made with ❤️ by MUHAMMAD ADIL
-Let’s make studying a breeze together! 🎓✨
+Made with ❤️ by MUHAMMAD ADIL  
+Let’s make studying a breeze together! 🎓✨  
