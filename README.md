@@ -61,7 +61,7 @@ https://github.com/Muhammad-Adil-code/Study-Sheduler-ECC.git
 
 ## 📄 Example Output
 
-| Day  | Subject | Chapter |
+| Day  | Subject | Chapter |  
 | 1  | Math | Chapter 1 |  
 | 2  | Science | Chapter 1 |  
 | 3  | Math | Chapter 2 |  
