@@ -39,9 +39,9 @@ Clone the repo:
 ```bash
 https://github.com/Muhammad-Adil-code/Study-Sheduler-ECC.git
 ```
----
 
-##✍️ How to Use
+
+## ✍️ How to Use
 
 1.✏️ Enter subject name(s), number of chapters, and number of study days.
 2.⭐ Choose subject preferences (optional).
@@ -51,7 +51,7 @@ https://github.com/Muhammad-Adil-code/Study-Sheduler-ECC.git
 
 ---
 
-##❗ Input Validation
+## ❗ Input Validation
 
 📘 Subject name must not be empty
 🔢 Chapters and Days must be positive integers only
@@ -59,7 +59,7 @@ https://github.com/Muhammad-Adil-code/Study-Sheduler-ECC.git
 
 ---
 
-##📄 Example Output
+## 📄 Example Output
 
 Day | Subject | Chapter
 1 | Math | Chapter 1
@@ -69,26 +69,26 @@ Day | Subject | Chapter
 
 ---
 
-##🙌 Contributions
+## 🙌 Contributions
 
 Contributions, issues and feature requests are welcome!
 Feel free to Reach me on mail or Linkidin
 
 ---
 
-##📃 License
+## 📃 License
 
 This project is licensed under the MIT License. 📜
 
 ---
 
-##🌟 Show Your Support
+## 🌟 Show Your Support
 
 Give a ⭐️ if you like this project and find it helpful!
 
 ---
 
-##👤 Author
+## 👤 Author
 
 Made with ❤️ by MUHAMMAD ADIL
 Let’s make studying a breeze together! 🎓✨
