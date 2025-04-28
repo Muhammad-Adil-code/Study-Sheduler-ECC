@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Study Schedule Generator</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+
+  <style>
+    :root {
+      --light-bg: white;
+      --light-text: #2f3640;
+      --light-chip: #74b9ff;
+      --light-schedule-bg: #f7f7f7;
+      --dark-bg: #1e272e;
+      --dark-text: #f5f6fa;
+      --dark-chip: #485460;
+      --dark-schedule-bg: #2f3640;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(-45deg, #74b9ff, #a29bfe, #ffeaa7, #fab1a0);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 30px;
+      transition: background 0.5s ease;
+    }
+
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      background: var(--light-bg);
+      border-radius: 15px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+      padding: 30px 20px;
+      max-width: 500px;
+      width: 90%;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.dark .container {
+      background: var(--dark-bg);
+      color: var(--dark-text);
+    }
+
+    h2 {
+      text-align: center;
+      color: inherit;
+      margin-bottom: 20px;
+    }
+
+    .toggle-mode {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: transparent;
+      border: 2px solid white;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .form-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+      justify-content: center;
+    }
+
+    input[type='text'],
+    input[type='number'] {
+      padding: 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+      width: 100%;
+      max-width: 300px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.dark input {
+      background: #2d3436;
+      color: #f5f6fa;
+      border: 1px solid #636e72;
+    }
+
+    button {
+      padding: 10px 14px;
+      background-color: #0984e3;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    button:hover {
+      background-color: #0077cc;
+    }
+
+    .chip-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+
+    .chip {
+      background-color: var(--light-chip);
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 14px;
+      color: #2d3436;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    body.dark .chip {
+      background-color: var(--dark-chip);
+      color: #f5f6fa;
+    }
+
+    .chip span {
+      cursor: pointer;
+      font-weight: bold;
+      color: #e74c3c;
+    }
+
+    .input-group {
+      text-align: center;
+      margin: 10px 0px;
+    }
+
+    #chapter-inputs .input-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    #schedule-output {
+      background: var(--light-schedule-bg);
+      padding: 20px;
+      margin-top: 25px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      white-space: pre-line;
+      font-size: 14px;
+      line-height: 1.6;
+      text-align: left;
+      border: 1px solid #ccc;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.dark #schedule-output {
+      background: var(--dark-schedule-bg);
+      color: var(--dark-text);
+      border-color: #636e72;
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #0984e3;
+      color: white;
+    }
+    .download-btn {
+      margin-top: 15px;
+      background: hsl(168, 100%, 36%);
+      
+    }
+
+    @media (max-width: 500px) {
+      button {
+        font-size: 12px;
+        padding: 8px 10px;
+      }
+      .download-btn {
+        margin-left: 70px !important;
+      }
+      .toggle-mode {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: #a29bfe;
+      }
+      .form-group input,
+      .input-group input{
+        width: 70% !important;
+      }
+
+      .container{
+        margin: 10px 10px;
+      }
+
+      input[type='text'],
+      input[type='number'] {
+        width: 100%;
+      }
+
+      .chip {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="toggle-mode" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+
+  <div class="container">
+    <h2>📚 Study Schedule Generator</h2>
+
+    <div class="form-group">
+      <input type="text" id="subject-input" placeholder="Enter subject (e.g. Math)">
+      <button onclick="addSubject()"><i class="fas fa-plus"></i> Add</button>
+    </div>
+
+    <div class="chip-container" id="subject-chips"></div>
+
+    <div id="chapter-inputs"></div>
+
+    <div class="input-group">
+      <input type="number" id="total-days" placeholder="Total days for study">
+    </div>
+
+    <div class="btn-group">
+      <button onclick="generateSchedule()"><i class="fas fa-calendar-alt"></i> Generate</button>
+      <button onclick="resetAll()"><i class="fas fa-undo"></i> Reset</button>
+    </div>
+
+    <div id="schedule-output" ></div>
+    <div class="flex justify-start">
+      <button class="download-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-4" onclick="downloadPDF()"><i class="fas fa-download"></i> Download PDF</button>
+    </div>
+    </div>
+  </div>
+
+  <script>
+      
+
+
+
+    const subjects = [];
+
+    function addSubject() {
+      const name = document.getElementById('subject-input').value.trim();
+      if (name && !subjects.find(s => s.name === name)) {
+        subjects.push({ name, chapters: 0, prefer: false });
+        updateSubjectChips();
+        updateChapterInputs();
+      }
+      document.getElementById('subject-input').value = '';
+    }
+
+    function updateSubjectChips() {
+      const chipContainer = document.getElementById('subject-chips');
+      chipContainer.innerHTML = '';
+      subjects.forEach((subj, index) => {
+        const chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.innerHTML = `${subj.name} <span onclick="removeSubject(${index})">&times;</span>`;
+        chipContainer.appendChild(chip);
+      });
+    }
+
+    function removeSubject(index) {
+      subjects.splice(index, 1);
+      updateSubjectChips();
+      updateChapterInputs();
+    }
+
+    function updateChapterInputs() {
+      const container = document.getElementById('chapter-inputs');
+      container.innerHTML = '';
+      subjects.forEach((subj, index) => {
+        const div = document.createElement('div');
+        div.className = 'input-group';
+        div.innerHTML = `
+          <label>Chapters of ${subj.name}:</label>
+          <input type="number" id="chapterInput" min="1" style="font-size:16px;padding:8px;width:45px;" value="${subj.chapters}" onchange="updateChapters(${index}, this.value)">
+          <label><input type="checkbox" style="" onchange="setPreference(${index}, this.checked)" /> Prefer ${subj.name}</label>
+        `;
+        container.appendChild(div);
+      }); 
+    }
+
+    function updateChapters(index, value) {
+      subjects[index].chapters = parseInt(value);
+    }
+    function setPreference(index, checked) {
+      subjects[index].prefer = checked;
+    }
+
+
+    function generateSchedule() {
+      const subject = document.getElementById("subject-input").value.trim();
+      const chapters = parseInt(document.getElementById("chapterInput").value);
+      const days = parseInt(document.getElementById("total-days").value);
+
+      // ✅ Validate input
+      
+
+      if (isNaN(chapters) || chapters <= 0) {
+        alert("Please enter a valid positive number for chapters.");
+        return;
+      }
+
+      if (isNaN(days) || days <= 0) {
+        alert("Please enter a valid positive number for total days.");
+        return;
+      }
+      const totalDays = parseInt(document.getElementById('total-days').value);
+      if (isNaN(totalDays) || totalDays <= 0) {
+        alert('Please enter a valid number of days.');
+        return;
+      }
+
+      const orderedSubjects = [...subjects].sort((a, b) => b.prefer - a.prefer);
+      let allChapters = [];
+      orderedSubjects.forEach(subj => {
+        for (let i = 1; i <= subj.chapters; i++) {
+          allChapters.push({ name: `${subj.name} - Chapter ${i}`, subject: subj.name });
+        }
+      });
+
+      const totalChapters = allChapters.length;
+
+      if (totalChapters === 0) {
+        document.getElementById('schedule-output').innerText = 'No chapters added.';
+        return;
+      }
+
+      const schedule = Array.from({ length: totalDays }, () => []);
+
+      if (totalDays === totalChapters) {
+        allChapters.forEach((chapter, i) => {
+          schedule[i].push(chapter);
+        });
+
+      } else if (totalDays < totalChapters) {
+        const base = Math.floor(totalChapters / totalDays);
+        let extra = totalChapters % totalDays;
+        let index = 0;
+
+        for (let day = 0; day < totalDays; day++) {
+          let chaptersToday = base + (extra > 0 ? 1 : 0);
+          if (extra > 0) extra--;
+
+          for (let c = 0; c < chaptersToday; c++) {
+            schedule[day].push(allChapters[index++]);
+          }
+        }
+
+      } else {
+        let totalSlots = totalDays;
+        let basePartsPerChapter = Math.floor(totalSlots / totalChapters);
+        let extraParts = totalSlots % totalChapters;
+
+        let units = [];
+
+        allChapters.forEach((chapter, i) => {
+          let parts = basePartsPerChapter + (extraParts > 0 ? 1 : 0);
+          if (extraParts > 0) extraParts--;
+
+          if (parts === 1) {
+            units.push({ name: chapter.name, subject: chapter.subject });
+          } else {
+            for (let p = 1; p <= parts; p++) {
+              units.push({ name: `${chapter.name} (Part ${p})`, subject: chapter.subject });
+            }
+          }
+
+        });
+
+        let unitIndex = 0;
+        for (let d = 0; d < totalDays && unitIndex < units.length; d++) {
+          schedule[d].push(units[unitIndex++]);
+        }
+      }
+
+      let colors = ['#ffeaa7', '#a29bfe', '#fab1a0', '#81ecec', '#55efc4', '#fd79a8'];
+      let subjectColors = {};
+      let colorIndex = 0;
+      subjects.forEach(subj => {
+        subjectColors[subj.name] = colors[colorIndex++ % colors.length];
+      });
+
+      let html = '<table><tr><th>Day</th><th>Chapters</th></tr>';
+      schedule.forEach((day, i) => {
+        let dayContent = day.map(c => `<div style='background:${subjectColors[c.subject]};padding:5px;border-radius:6px;margin:2px 0;'>${c.name}</div>`).join('');
+        html += `<tr><td>Day ${i + 1}</td><td>${dayContent}</td></tr>`;
+      });
+      html += '</table>';
+
+      document.getElementById('schedule-output').innerHTML = html;
+    }
+    async function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4'
+  });
+async function loadImageAsDataURL(url, opacity = 0.1) {
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.src = url;
+
+  return new Promise((resolve, reject) => {
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.globalAlpha = opacity; // set transparency here
+      ctx.drawImage(img, 0, 0);
+      resolve(canvas.toDataURL('image/jpeg'));
+    };
+    img.onerror = reject;
+  });
+}
+
+  const margin = 14;
+  const tableElement = document.getElementById('schedule-output');
+  const rows = [];
+
+  // Collect table rows
+  Array.from(tableElement.querySelectorAll('tr')).forEach(tr => {
+    const row = Array.from(tr.querySelectorAll('th, td')).map(cell => cell.innerText.trim());
+    if (row.length > 0) rows.push(row);
+  });
+
+  // Load ECC logo as Base64
+  const logoUrl = 'https://i.ibb.co/cK5fsnn4/ec.jpg';
+const logoBase64 = await loadImageAsDataURL(logoUrl, 0.3); // watermark with 10% opacity
+async function loadImageAsDataURL(logoUrl, opacity = 0.3) {
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.src = logoUrl;
+
+  return new Promise((resolve, reject) => {
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.globalAlpha = opacity;
+      ctx.drawImage(img, 0, 0);
+      resolve(canvas.toDataURL('image/png'));
+    };
+    img.onerror = reject;
+  });
+}
+
+
+
+
+
+const pageWidth = doc.internal.pageSize.getWidth();
+const pageHeight = doc.internal.pageSize.getHeight();
+
+let isFirstPage = true;
+
+doc.autoTable({
+  startY: 50,
+  margin: { top: margin, bottom: margin, left: margin, right: margin },
+  head: [rows[0]],
+  body: rows.slice(1),
+  theme: 'grid',
+  styles: {
+    fontSize: 10,
+    cellPadding: 4,
+  },
+  headStyles: {
+    fillColor: [240, 240, 240],
+    textColor: [0, 0, 0]
+  },
+
+  // ✅ Draw watermark + heading on every page
+  didDrawPage: function () {
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const logoW = 150;
+    const logoH = 150;
+    const centerX = (pageWidth - logoW) / 2;
+    const centerY = (pageHeight - logoH) / 2;
+
+    // Draw watermark with 10% opacity
+    doc.setGState(new doc.GState({ opacity: 0.1 }));
+    doc.addImage(logoBase64, 'PNG', centerX, centerY, logoW, logoH);
+    doc.setGState(new doc.GState({ opacity: 1 })); // Reset to normal
+
+    // Draw title only on first page
+    if (isFirstPage) {
+      doc.setFontSize(18);
+      doc.setFont('helvetica', 'bold');
+      const title = "Study Schedule";
+      doc.text(title, pageWidth / 2, 30, { align: 'center' });
+      isFirstPage = false;
+    }
+  }
+});
+
+
+
+  doc.save('study_schedule.pdf');
+
+  // Helper function to load base64
+  async function loadImageAsDataURL(url) {
+    const response = await fetch(url, { mode: 'cors' });
+    const blob = await response.blob();
+    return new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.readAsDataURL(blob);
+    });
+  }
+}
+
+
+
+
+    function resetAll() {
+      subjects.length = 0;
+      document.getElementById('subject-input').value = '';
+      document.getElementById('total-days').value = '';
+      document.getElementById('subject-chips').innerHTML = '';
+      document.getElementById('chapter-inputs').innerHTML = '';
+      document.getElementById('schedule-output').innerText = '';
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+      const btn = document.querySelector('.toggle-mode');
+      btn.innerText = document.body.classList.contains('dark') ? '☀️ Light Mode' : '🌙 Dark Mode';
+    }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const subjectInput = document.getElementById("subject-input");
+    const chapterInput = document.getElementById("chapterInput");
+    const daysInput = document.getElementById("total-days");
+
+    if (subjectInput) {
+      subjectInput.addEventListener("input", function () {
+        this.value = this.value.replace(/[^a-zA-Z\s]/g, ""); // allow letters and spaces
+      });
+    }
+
+    if (chapterInput) {
+      chapterInput.addEventListener("input", function () {
+        this.value = this.value.replace(/[^0-9]/g, ""); // allow only digits
+      });
+    }
+
+    if (daysInput) {
+      daysInput.addEventListener("input", function () {
+        this.value = this.value.replace(/[^0-9]/g, ""); // allow only digits
+      });
+    }
+  });
+
+
+
+  </script>
+</body>
+</html>
