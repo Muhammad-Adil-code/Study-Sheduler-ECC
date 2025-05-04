@@ -39,7 +39,11 @@ Clone the repo:
 ```bash
 https://github.com/Muhammad-Adil-code/Study-Sheduler-ECC.git
 ```
+Live link
 
+```bash
+https://study-sheduler-ecc.vercel.app/
+```
 
 ## ✍️ How to Use
 
